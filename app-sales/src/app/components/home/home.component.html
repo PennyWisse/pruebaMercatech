@@ -1,0 +1,121 @@
+<div class="dashboard-container py-3 animate-fade-in">
+  <!-- Banner Hero con Gradiente y Botones -->
+  <div class="p-4 p-md-5 mb-4 rounded-4 text-white hero-banner shadow position-relative overflow-hidden">
+    <div class="col-md-9 px-0 position-relative" style="z-index: 2;">
+      <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold">
+        <i class="ri-sparkling-fill me-1"></i> Sistema Integrado de Ventas
+      </span>
+      <h1 class="display-5 fw-bold mb-3">Panel de Control & Ventas</h1>
+      <p class="lead mb-4 opacity-90">
+        Gestión integral de productos en tiempo real, punto de venta ágil con descuentos a nivel de producto e historial auditable de transacciones.
+      </p>
+      <div class="d-flex gap-3 flex-wrap">
+        <a routerLink="/pos" class="btn btn-light btn-lg fw-bold text-primary px-4 shadow-sm btn-hero">
+          <i class="ri-shopping-bag-3-fill me-1"></i> Ir al Punto de Venta
+        </a>
+        <a routerLink="/ventas" class="btn btn-outline-light btn-lg px-4 btn-hero">
+          <i class="ri-file-list-3-line me-1"></i> Ver Historial de Ventas
+        </a>
+      </div>
+    </div>
+    <!-- Decoración de fondo -->
+    <div class="hero-shape"></div>
+  </div>
+
+  <!-- Métricas Rápidas -->
+  <div class="row g-4 mb-4">
+    <!-- Card Productos -->
+    <div class="col-md-4">
+      <div class="modern-card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="ri-box-3-fill fs-3"></i>
+          </div>
+          <div>
+            <div class="text-muted small text-uppercase fw-bold">Catálogo Disponible</div>
+            <h2 class="fw-bold mb-0 text-dark">{{ productsCount }}</h2>
+            <div class="smaller text-muted mt-1">Productos registrados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Ventas -->
+    <div class="col-md-4">
+      <div class="modern-card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stat-icon bg-success-subtle text-success">
+            <i class="ri-shopping-cart-2-fill fs-3"></i>
+          </div>
+          <div>
+            <div class="text-muted small text-uppercase fw-bold">Ventas Emitidas</div>
+            <h2 class="fw-bold mb-0 text-dark">{{ salesCount }}</h2>
+            <div class="smaller text-muted mt-1">Transacciones procesadas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Ingresos -->
+    <div class="col-md-4">
+      <div class="modern-card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stat-icon bg-info-subtle text-info">
+            <i class="ri-wallet-3-fill fs-3"></i>
+          </div>
+          <div>
+            <div class="text-muted small text-uppercase fw-bold">Ingresos Totales</div>
+            <h2 class="fw-bold mb-0 text-dark">${{ totalRevenue | number:'1.2-2' }}</h2>
+            <div class="smaller text-muted mt-1">Facturación neta generada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimas Ventas Registradas -->
+  <div class="modern-card overflow-hidden">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+      <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+        <i class="ri-time-line text-primary"></i>
+        Transacciones Recientes
+      </h6>
+      <a routerLink="/ventas" class="btn btn-sm btn-link text-decoration-none fw-semibold">
+        Ver todas <i class="ri-arrow-right-line"></i>
+      </a>
+    </div>
+    <div class="card-body p-0">
+      <div *ngIf="recentSales.length === 0" class="text-center py-4 text-muted">
+        <p class="mb-0">Aún no hay transacciones para mostrar.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="recentSales.length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light smaller text-uppercase text-muted">
+            <tr>
+              <th class="ps-4">Comprobante</th>
+              <th>Fecha y Hora</th>
+              <th>Artículos</th>
+              <th class="text-end pe-4">Total Pagado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of recentSales">
+              <td class="ps-4 fw-bold text-primary">#{{ s.id }}</td>
+              <td class="text-muted small">{{ s.created_at }}</td>
+              <td>
+                <span class="badge badge-soft-primary">
+                  {{ s.details.length }} producto(s)
+                </span>
+                <span class="badge badge-soft-success ms-1" *ngIf="s.total_discount && s.total_discount > 0">
+                  Desc. -${{ s.total_discount | number:'1.2-2' }}
+                </span>
+              </td>
+              <td class="text-end pe-4 fw-bold text-dark">${{ s.total | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

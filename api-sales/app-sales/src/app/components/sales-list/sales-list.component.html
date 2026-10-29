@@ -1,0 +1,206 @@
+<div class="sales-container py-3 animate-fade-in">
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-2">
+      <div class="badge-icon bg-info-subtle text-primary">
+        <i class="ri-file-list-3-fill fs-4"></i>
+      </div>
+      <div>
+        <h2 class="section-title mb-0">Historial de Ventas</h2>
+        <p class="text-muted small mb-0">Auditoría de ventas con soporte de descuentos y anulación con reposición</p>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" (click)="loadSales()" [disabled]="loading">
+        <i class="ri-refresh-line" [class.spin]="loading"></i>
+        <span>Actualizar</span>
+      </button>
+      <a routerLink="/pos" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+        <i class="ri-add-line"></i>
+        <span>Nueva Venta</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-muted fw-semibold">Consultando registro de ventas...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && sales.length === 0" class="modern-card text-center py-5 px-3">
+    <div class="mb-3">
+      <i class="ri-archive-drawer-line display-3 text-muted"></i>
+    </div>
+    <h5 class="text-secondary fw-bold">Sin ventas registradas</h5>
+    <p class="text-muted small mb-3">No hay comprobantes emitidos en el sistema actualmente.</p>
+    <div>
+      <a routerLink="/pos" class="btn btn-primary">
+        <i class="ri-shopping-cart-2-line me-1"></i> Ir al Punto de Venta
+      </a>
+    </div>
+  </div>
+
+  <!-- Tabla de Ventas -->
+  <div *ngIf="!loading && sales.length > 0" class="modern-card overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 custom-sales-table">
+        <thead class="table-light text-muted small text-uppercase fw-semibold">
+          <tr>
+            <th class="ps-4" style="width: 100px;">Comprobante</th>
+            <th>Fecha y Hora</th>
+            <th>Items Comprados</th>
+            <th class="text-end">Descuento</th>
+            <th class="text-end pe-4">Total</th>
+            <th class="text-center pe-4" style="width: 170px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sale of sales" class="sale-row">
+            <td class="ps-4 fw-bold text-primary">#{{ sale.id }}</td>
+            <td class="text-muted small">
+              <i class="ri-time-line me-1"></i>{{ sale.created_at || 'Sin fecha' }}
+            </td>
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge badge-soft-primary" *ngFor="let d of sale.details.slice(0, 3)">
+                  {{ d.quantity }}x {{ d.product }}
+                </span>
+                <span class="badge badge-soft-warning" *ngIf="sale.details.length > 3">
+                  +{{ sale.details.length - 3 }} más
+                </span>
+              </div>
+            </td>
+            <!-- Descuento -->
+            <td class="text-end">
+              <span class="badge badge-soft-success" *ngIf="sale.total_discount && sale.total_discount > 0">
+                -${{ sale.total_discount | number:'1.2-2' }}
+              </span>
+              <span class="text-muted smaller" *ngIf="!sale.total_discount || sale.total_discount === 0">
+                $0.00
+              </span>
+            </td>
+            <!-- Total -->
+            <td class="text-end pe-4 fw-bold text-dark fs-6">
+              ${{ sale.total | number:'1.2-2' }}
+            </td>
+            <!-- Acciones -->
+            <td class="text-center pe-4">
+              <div class="btn-group btn-group-sm">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary d-inline-flex align-items-center gap-1"
+                  (click)="openDetailModal(sale)"
+                  title="Ver Detalle Completo"
+                >
+                  <i class="ri-eye-line"></i>
+                  <span>Detalle</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="confirmDelete(sale)"
+                  [disabled]="deletingId === sale.id"
+                  title="Anular venta y restaurar stock"
+                >
+                  <span class="spinner-border spinner-border-sm" *ngIf="deletingId === sale.id"></span>
+                  <i class="ri-delete-bin-line" *ngIf="deletingId !== sale.id"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal de Detalle de Venta -->
+  <div
+    class="modal fade show d-block modal-backdrop-custom"
+    tabindex="-1"
+    role="dialog"
+    *ngIf="selectedSale"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content border-0 modern-card overflow-hidden shadow-lg animate-fade-in">
+        <!-- Cabecera con Gradiente Azul Vibrante (Sin Negro) -->
+        <div class="modal-header bg-gradient-primary text-white py-3 px-4">
+          <h5 class="modal-title d-flex align-items-center gap-2 mb-0">
+            <i class="ri-receipt-fill"></i>
+            Comprobante de Venta #{{ selectedSale.id }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white shadow-none" (click)="closeDetailModal()"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="d-flex justify-content-between mb-3 text-muted small border-bottom pb-2 flex-wrap gap-2">
+            <div>
+              <strong>Fecha:</strong> {{ selectedSale.created_at || 'N/A' }}
+            </div>
+            <div>
+              <strong>ID Comprobante:</strong> #{{ selectedSale.id }}
+            </div>
+          </div>
+
+          <h6 class="fw-bold mb-3 text-dark">Desglose de Productos y Descuentos</h6>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+              <thead class="table-light smaller text-uppercase">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-center" style="width: 75px;">Cant.</th>
+                  <th class="text-end" style="width: 105px;">Precio Unit.</th>
+                  <th class="text-end" style="width: 105px;">Subtotal</th>
+                  <th class="text-end" style="width: 110px;">Descuento</th>
+                  <th class="text-end" style="width: 120px;">Subtotal Final</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of selectedSale.details">
+                  <td class="fw-bold text-dark">{{ item.product }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-end">
+                    ${{ (item.price || (item.subtotal / item.quantity)) | number:'1.2-2' }}
+                  </td>
+                  <td class="text-end text-muted">
+                    ${{ item.subtotal | number:'1.2-2' }}
+                  </td>
+                  <td class="text-end">
+                    <span class="badge badge-soft-success" *ngIf="item.discount_percent && item.discount_percent > 0">
+                      -{{ item.discount_percent }}% (-${{ item.discount_amount | number:'1.2-2' }})
+                    </span>
+                    <span class="text-muted smaller" *ngIf="!item.discount_percent || item.discount_percent === 0">
+                      -
+                    </span>
+                  </td>
+                  <td class="text-end fw-bold text-primary">
+                    ${{ (item.subtotal_with_discount !== undefined ? item.subtotal_with_discount : item.subtotal) | number:'1.2-2' }}
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="table-light" *ngIf="selectedSale.total_discount && selectedSale.total_discount > 0">
+                  <th colspan="5" class="text-end text-success">TOTAL DESCUENTO AHORRADO:</th>
+                  <th class="text-end text-success">-${{ selectedSale.total_discount | number:'1.2-2' }}</th>
+                </tr>
+                <tr class="table-light">
+                  <th colspan="5" class="text-end fs-6 text-dark">TOTAL PAGADO:</th>
+                  <th class="text-end fs-5 text-primary">${{ selectedSale.total | number:'1.2-2' }}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light px-4 py-3">
+          <button type="button" class="btn btn-secondary px-4 shadow-none" (click)="closeDetailModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

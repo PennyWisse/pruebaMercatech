@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg bg-gradient-nav shadow-sm navbar-modern">
+  <div class="container-md">
+    <a class="navbar-brand d-flex align-items-center gap-2 text-white" routerLink="/home">
+      <div class="brand-icon">
+        <i class="ri-store-3-fill fs-5"></i>
+      </div>
+      <span class="fw-bold tracking-tight">Sales<span class="brand-accent">Flow</span></span>
+    </a>
+
+    <button
+      class="navbar-toggler border-0 text-white shadow-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarToggler"
+      aria-controls="navbarToggler"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="ri-menu-3-line fs-4"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+        <li class="nav-item">
+          <a class="nav-link nav-pill-link" routerLink="/home" routerLinkActive="active">
+            <i class="ri-dashboard-2-line me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill-link" routerLink="/pos" routerLinkActive="active">
+            <i class="ri-shopping-bag-3-line me-1"></i>Punto de Venta
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill-link" routerLink="/ventas" routerLinkActive="active">
+            <i class="ri-file-list-3-line me-1"></i>Historial de Ventas
+          </a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item">
+          <a routerLink="/pos" class="btn btn-cart-nav position-relative d-flex align-items-center gap-2">
+            <i class="ri-shopping-cart-2-line"></i>
+            <span>Carrito de Orden</span>
+            <span
+              class="badge bg-white text-primary rounded-pill fw-bold"
+              *ngIf="(itemCount$ | async) as count"
+            >
+              {{ count }}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

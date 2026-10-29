@@ -1,0 +1,35 @@
+/*================ Variables Modernas ================*/
+$my-primary-color        : #2563eb;
+$my-primary-hover        : #1d4ed8;
+$my-danger-color         : #ef4444;
+$my-dark-color           : #1e293b; // Slate 800 en lugar de negro fuerte
+$my-secondary-light-color: #f1f5f9;
+$my-secondary-color      : #64748b;
+$my-white-color          : #ffffff;
+$my-border-color         : #e2e8f0;
+$my-column-title-color   : #334155;
+$my-body-color           : #f8fafc;
+
+/*================ Bootstrap Variables ================*/
+$font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+
+$primary: $my-primary-color;
+$danger: $my-danger-color;
+$body-bg: $my-body-color;
+$body-color: $my-dark-color;
+
+$table-bg: none;
+$table-cell-padding-y: 1rem;
+$table-border-color: $my-border-color;
+
+$btn-padding-y: 8px;
+$btn-padding-x: 18px;
+$btn-border-radius: 8px;
+$btn-font-weight: 600;
+
+$input-padding-y: 0.65rem;
+$input-padding-x: 0.9rem;
+$input-border-radius: 8px;
+$input-bg: $my-white-color;
+
+$navbar-padding-y: 0.85rem;

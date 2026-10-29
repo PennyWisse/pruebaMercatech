@@ -1,0 +1,57 @@
+.navbar-modern {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.brand-accent {
+  color: #bfdbfe;
+  font-weight: 800;
+}
+
+.nav-pill-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &.active {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.22);
+    font-weight: 600;
+  }
+}
+
+.btn-cart-nav {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.45rem 1rem;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+}
